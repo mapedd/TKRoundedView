@@ -7,6 +7,7 @@
 //
 
 #import "TKViewController.h"
+#import "TKRoundedView.h"
 
 @interface TKViewController ()
 
@@ -14,16 +15,51 @@
 
 @implementation TKViewController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+- (id)init{
+    self = [super initWithNibName:nil bundle:nil];
+    if(!self)return nil;
+    return self;
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)viewDidLoad{
+    [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    TKRoundedCorner cornerOptions[10] = {
+                                        TKRoundedCornerAll,
+                                        TKRoundedCornerTopLeft,
+                                        TKRoundedCornerTopRight,
+                                        TKRoundedCornerBottomRight,
+                                        TKRoundedCornerBottomLeft,
+                                        TKRoundedCornerTopLeft | TKRoundedCornerTopRight,
+                                        TKRoundedCornerBottomLeft | TKRoundedCornerBottomRight,
+                                        TKRoundedCornerTopLeft | TKRoundedCornerBottomRight,
+                                        TKRoundedCornerBottomLeft | TKRoundedCornerTopRight,
+                                        TKRoundedCornerTopLeft | TKRoundedCornerTopRight
+                                        };
+    
+    CGRect frame = CGRectMake(10.0f, 10.0f, 100.0f, 100.0f);
+    
+    for (int i = 0; i < 10; i++) {
+        
+        
+        
+        TKRoundedView *view1 = [[TKRoundedView alloc] initWithFrame:frame];
+        view1.roundedCorners = cornerOptions[i];
+        [self.view addSubview:view1];
+        
+        frame.origin.y += 110.0f;
+        
+        if (i%4 == 0 && i != 0) {
+            frame.origin.y = 10.0f;
+            frame.origin.x += 110.0f;
+        }
+
+    }
+}
+
+- (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

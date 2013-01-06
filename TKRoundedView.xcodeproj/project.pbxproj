@@ -17,8 +17,7 @@
 		0474D9A91699EE5400110CD5 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0474D9A81699EE5400110CD5 /* Default@2x.png */; };
 		0474D9AB1699EE5400110CD5 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0474D9AA1699EE5400110CD5 /* Default-568h@2x.png */; };
 		0474D9AE1699EE5400110CD5 /* TKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0474D9AD1699EE5400110CD5 /* TKViewController.m */; };
-		0474D9B11699EE5400110CD5 /* TKViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0474D9AF1699EE5400110CD5 /* TKViewController_iPhone.xib */; };
-		0474D9B41699EE5400110CD5 /* TKViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0474D9B21699EE5400110CD5 /* TKViewController_iPad.xib */; };
+		0474D9CB1699F0F700110CD5 /* TKRoundedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0474D9CA1699F0F700110CD5 /* TKRoundedView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,8 +36,8 @@
 		0474D9AA1699EE5400110CD5 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		0474D9AC1699EE5400110CD5 /* TKViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TKViewController.h; sourceTree = "<group>"; };
 		0474D9AD1699EE5400110CD5 /* TKViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TKViewController.m; sourceTree = "<group>"; };
-		0474D9B01699EE5400110CD5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/TKViewController_iPhone.xib; sourceTree = "<group>"; };
-		0474D9B31699EE5400110CD5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/TKViewController_iPad.xib; sourceTree = "<group>"; };
+		0474D9C91699F0F700110CD5 /* TKRoundedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKRoundedView.h; sourceTree = SOURCE_ROOT; };
+		0474D9CA1699F0F700110CD5 /* TKRoundedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKRoundedView.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,12 +84,12 @@
 		0474D99A1699EE5400110CD5 /* TKRoundedView */ = {
 			isa = PBXGroup;
 			children = (
+				0474D9C91699F0F700110CD5 /* TKRoundedView.h */,
+				0474D9CA1699F0F700110CD5 /* TKRoundedView.m */,
 				0474D9A31699EE5400110CD5 /* TKAppDelegate.h */,
 				0474D9A41699EE5400110CD5 /* TKAppDelegate.m */,
 				0474D9AC1699EE5400110CD5 /* TKViewController.h */,
 				0474D9AD1699EE5400110CD5 /* TKViewController.m */,
-				0474D9AF1699EE5400110CD5 /* TKViewController_iPhone.xib */,
-				0474D9B21699EE5400110CD5 /* TKViewController_iPad.xib */,
 				0474D99B1699EE5400110CD5 /* Supporting Files */,
 			);
 			path = TKRoundedView;
@@ -166,8 +165,6 @@
 				0474D9A71699EE5400110CD5 /* Default.png in Resources */,
 				0474D9A91699EE5400110CD5 /* Default@2x.png in Resources */,
 				0474D9AB1699EE5400110CD5 /* Default-568h@2x.png in Resources */,
-				0474D9B11699EE5400110CD5 /* TKViewController_iPhone.xib in Resources */,
-				0474D9B41699EE5400110CD5 /* TKViewController_iPad.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +178,7 @@
 				0474D9A11699EE5400110CD5 /* main.m in Sources */,
 				0474D9A51699EE5400110CD5 /* TKAppDelegate.m in Sources */,
 				0474D9AE1699EE5400110CD5 /* TKViewController.m in Sources */,
+				0474D9CB1699F0F700110CD5 /* TKRoundedView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,22 +191,6 @@
 				0474D99E1699EE5400110CD5 /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		0474D9AF1699EE5400110CD5 /* TKViewController_iPhone.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0474D9B01699EE5400110CD5 /* en */,
-			);
-			name = TKViewController_iPhone.xib;
-			sourceTree = "<group>";
-		};
-		0474D9B21699EE5400110CD5 /* TKViewController_iPad.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0474D9B31699EE5400110CD5 /* en */,
-			);
-			name = TKViewController_iPad.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -307,6 +289,7 @@
 				0474D9B91699EE5400110CD5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
