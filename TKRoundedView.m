@@ -39,7 +39,7 @@
     _fillColor = [UIColor whiteColor];
     _borderColor = [UIColor grayColor];
     _cornerRadius = 15.0f;
-    _borderWidth = 4.0f;
+    _borderWidth = 1.0f;
     _roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerBottomRight;
     
 }
@@ -149,8 +149,8 @@
 }
 
 - (void)setCornerRadius:(CGFloat)cornerRadius{
-    [self setNeedsDisplay];
     _cornerRadius = cornerRadius;
+    [self setNeedsDisplay];
 }
 
 @end
