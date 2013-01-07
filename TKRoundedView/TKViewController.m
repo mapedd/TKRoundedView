@@ -39,25 +39,26 @@
                                         TKRoundedCornerTopLeft | TKRoundedCornerTopRight | TKRoundedCornerBottomRight,
                                         TKRoundedCornerTopLeft | TKRoundedCornerTopRight | TKRoundedCornerBottomLeft,
                                         };
+    CGFloat offset = 10.0f;
     
-    CGFloat side = self.view.frame.size.width / 3 - 30;
+    CGFloat side = (self.view.frame.size.width - 4 * offset)/ 3.0f ;
     
-    CGRect frame = CGRectMake(10.0f, 10.0f, side, side);
+    CGRect frame = CGRectMake(offset, offset, side, side);
     
     for (int i = 0; i < 12; i++) {
         
-        TKRoundedView *view1 = [[TKRoundedView alloc] initWithFrame:frame];
+        TKRoundedView *view1 = [[TKRoundedView alloc] initWithFrame:CGRectInset(frame, 10, 10)];
         view1.roundedCorners = cornerOptions[i];
         view1.borderColor = [UIColor colorWithRed:0.123 green:0.435 blue:0.52 alpha:1.0];
-        view1.fillColor = [UIColor colorWithWhite:1 alpha:1];
+        view1.fillColor = [UIColor colorWithWhite:0.6 alpha:0.1];
         view1.borderWidth = 5.0f;
         [self.view addSubview:view1];
         
-        frame.origin.y += 110.0f;
+        frame.origin.y += side + offset;
         
         if (i == 3 || i == 7 || i == 11) {
-            frame.origin.y = 10.0f;
-            frame.origin.x += 10.0f + side;
+            frame.origin.y = offset;
+            frame.origin.x += offset + side;
         }
 
     }
