@@ -2,7 +2,7 @@
 
 ##Features
 
-Simple rounded corners with images
+Simple rounded corners __without__ images
 
 ![Screenshot](https://dl.dropbox.com/u/450887/tkroundedview.png)
 
