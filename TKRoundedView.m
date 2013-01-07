@@ -1,12 +1,16 @@
 //
 //  TKRoundedView.m
-//  Perfect Gym
+//  TKRoundedView
 //
 //  Created by Tomasz Kuźma on 1/6/13.
 //  Copyright (c) 2013 Tomasz Kuźma. All rights reserved.
 //
 
 #import "TKRoundedView.h"
+
+const TKRoundedCorner TKRoundedCornerAll = TKRoundedCornerTopRight | TKRoundedCornerBottomRight | TKRoundedCornerBottomLeft | TKRoundedCornerTopLeft;
+
+const TKDrawnBorderSides TKDrawnBordersSidesAll = TKDrawnBorderSidesRight | TKDrawnBorderSidesLeft | TKDrawnBorderSidesTop | TKDrawnBorderSidesBottom;
 
 @implementation TKRoundedView
 

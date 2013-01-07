@@ -91,7 +91,7 @@
     }
     
     view1.borderColor = [UIColor colorWithRed:0.123 green:0.435 blue:0.52 alpha:1.0];
-    view1.fillColor = [UIColor redColor];;
+    view1.fillColor = [UIColor redColor];
     view1.borderWidth = 5.0f;
     view1.cornerRadius = 15.0f;
     [self.view addSubview:view1];
