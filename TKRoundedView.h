@@ -14,9 +14,22 @@ typedef NS_OPTIONS(NSUInteger, TKRoundedCorner) {
     TKRoundedCornerTopLeft      = 1 <<  3,
 };
 
+typedef NS_OPTIONS(NSUInteger, TKDrawnBorderSides) {
+    TKDrawnBorderSidesNone      = 0,
+    TKDrawnBorderSidesRight     = 1 <<  0,
+    TKDrawnBorderSidesLeft      = 1 <<  1,
+    TKDrawnBorderSidesTop       = 1 <<  2,
+    TKDrawnBorderSidesBottom    = 1 <<  3,
+};
+
 static const TKRoundedCorner TKRoundedCornerAll = TKRoundedCornerTopRight | TKRoundedCornerBottomRight | TKRoundedCornerBottomLeft | TKRoundedCornerTopLeft;
 
+static const TKRoundedCorner TKDrawnBordersSidesAll = TKDrawnBorderSidesRight | TKDrawnBorderSidesLeft | TKDrawnBorderSidesTop | TKDrawnBorderSidesBottom;
+
 @interface TKRoundedView : UIView
+
+/* Which borders should be drawn - default TKDrawnBordersSidesAll - only not rounded borders can *NOT* be drawn atm  */
+@property (nonatomic, assign) TKDrawnBorderSides drawnBordersSides;
 
 /* Which corners should be rounded - default TKRoundedCornerAll */
 @property (nonatomic, assign) TKRoundedCorner roundedCorners;

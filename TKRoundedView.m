@@ -40,7 +40,8 @@
     _borderColor = [UIColor grayColor];
     _cornerRadius = 15.0f;
     _borderWidth = 1.0f;
-    _roundedCorners = TKRoundedCornerTopLeft | TKRoundedCornerBottomRight;
+    _roundedCorners = TKRoundedCornerAll;
+    _drawnBordersSides = TKDrawnBordersSidesAll;
     
 }
 
@@ -54,26 +55,42 @@
     
     /* Setup colors and line width */
     CGContextSetFillColorWithColor(ctx, _fillColor.CGColor);
+    CGContextSetLineWidth(ctx, 0.0f);
+    
+    
+    // Add and fill rect
+    [self addPathToContext:ctx inRect:properRect respectDrawnBorder:NO];
+    
+    // Close the path
+    CGContextClosePath(ctx);
+    
+    // Fill and Stroke path
+    CGContextDrawPath(ctx, kCGPathFill);
+    
+    /* Setup colors and line width */
     CGContextSetStrokeColorWithColor(ctx, _borderColor.CGColor);
     CGContextSetLineWidth(ctx, _borderWidth);
     
-    CGFloat minx = CGRectGetMinX(properRect);
-    CGFloat midx = CGRectGetMidX(properRect);
-    CGFloat maxx = CGRectGetMaxX(properRect);
+    // Add and stroke rect
+    [self addPathToContext:ctx inRect:properRect respectDrawnBorder:YES];
     
-    CGFloat miny = CGRectGetMinY(properRect);
-    CGFloat midy = CGRectGetMidY(properRect);
-    CGFloat maxy = CGRectGetMaxY(properRect);
+    // Close the path
+    CGContextClosePath(ctx);
     
-    // Next, we will go around the rectangle in the order given by the figure below.
-    //       minx    midx    maxx
-    // miny    2       3       4
-    // midy   1 9              5
-    // maxy    8       7       6
-    // Which gives us a coincident start and end point, which is incidental to this technique, but still doesn't
-    // form a closed path, so we still need to close the path to connect the ends correctly.
-    // Thus we start by moving to point 1, then adding arcs through each pair of points that follows.
-    // You could use a similar tecgnique to create any shape with rounded corners.
+    // Fill and Stroke path
+    CGContextDrawPath(ctx, kCGPathStroke);
+    
+}
+
+- (void)addPathToContext:(CGContextRef)ctx inRect:(CGRect)rect respectDrawnBorder:(BOOL)respectDrawnBorders{
+    
+    CGFloat minx = CGRectGetMinX(rect);
+    CGFloat midx = CGRectGetMidX(rect);
+    CGFloat maxx = CGRectGetMaxX(rect);
+    
+    CGFloat miny = CGRectGetMinY(rect);
+    CGFloat midy = CGRectGetMidY(rect);
+    CGFloat maxy = CGRectGetMaxY(rect);
     
     // Start at 1
     CGContextMoveToPoint(ctx, minx, midy);
@@ -83,8 +100,22 @@
         CGContextAddArcToPoint(ctx, minx, miny, midx, miny, _cornerRadius);
     }
     else{
-        CGContextAddLineToPoint(ctx, minx, miny);
-        CGContextAddLineToPoint(ctx, midx, miny);
+        
+        if (_drawnBordersSides & TKDrawnBorderSidesLeft || !respectDrawnBorders){
+            CGContextAddLineToPoint(ctx, minx, miny);
+        }
+        else{
+            CGContextDrawPath(ctx, kCGPathStroke);
+            CGContextMoveToPoint(ctx, minx, miny);
+        }
+        
+        if (_drawnBordersSides & TKDrawnBorderSidesTop  || !respectDrawnBorders){
+            CGContextAddLineToPoint(ctx, midx, miny);
+        }
+        else{
+            CGContextDrawPath(ctx, kCGPathStroke);
+            CGContextMoveToPoint(ctx, midx, miny);
+        }
     }
     
     if (_roundedCorners & TKRoundedCornerTopRight) {
@@ -92,8 +123,22 @@
         CGContextAddArcToPoint(ctx, maxx, miny, maxx, midy, _cornerRadius);
     }
     else{
-        CGContextAddLineToPoint(ctx, maxx, miny);
-        CGContextAddLineToPoint(ctx, maxx, midy);
+        
+        if (_drawnBordersSides & TKDrawnBorderSidesTop  || !respectDrawnBorders){
+            CGContextAddLineToPoint(ctx, maxx, miny);
+        }
+        else{
+            CGContextDrawPath(ctx, kCGPathStroke);
+            CGContextMoveToPoint(ctx, maxx, miny);
+        }
+        
+        if (_drawnBordersSides & TKDrawnBorderSidesRight  || !respectDrawnBorders){
+            CGContextAddLineToPoint(ctx, maxx, midy);
+        }
+        else{
+            CGContextDrawPath(ctx, kCGPathStroke);
+            CGContextMoveToPoint(ctx, maxx, midy);
+        }
     }
     
     if (_roundedCorners & TKRoundedCornerBottomRight) {
@@ -101,8 +146,22 @@
         CGContextAddArcToPoint(ctx, maxx, maxy, midx, maxy, _cornerRadius);
     }
     else{
-        CGContextAddLineToPoint(ctx, maxx, maxy);
-        CGContextAddLineToPoint(ctx, midx, maxy);
+        
+        if (_drawnBordersSides & TKDrawnBorderSidesRight  || !respectDrawnBorders){
+            CGContextAddLineToPoint(ctx, maxx, maxy);
+        }
+        else{
+            CGContextDrawPath(ctx, kCGPathStroke);
+            CGContextMoveToPoint(ctx, maxx, maxy);
+        }
+        
+        if (_drawnBordersSides & TKDrawnBorderSidesBottom  || !respectDrawnBorders){
+            CGContextAddLineToPoint(ctx, midx, maxy);
+        }
+        else{
+            CGContextDrawPath(ctx, kCGPathStroke);
+            CGContextMoveToPoint(ctx, midx, maxy);
+        }
     }
     
     if (_roundedCorners & TKRoundedCornerBottomLeft) {
@@ -110,16 +169,24 @@
         CGContextAddArcToPoint(ctx, minx, maxy, minx, midy, _cornerRadius);
     }
     else{
-        CGContextAddLineToPoint(ctx, minx, maxy);
-        CGContextAddLineToPoint(ctx, minx, midy);
+        
+        if (_drawnBordersSides & TKDrawnBorderSidesBottom  || !respectDrawnBorders){
+            CGContextAddLineToPoint(ctx, minx, maxy);
+        }
+        else{
+            CGContextDrawPath(ctx, kCGPathStroke);
+            CGContextMoveToPoint(ctx, minx, maxy);
+        }
+        
+        if (_drawnBordersSides & TKDrawnBorderSidesLeft  || !respectDrawnBorders){
+            CGContextAddLineToPoint(ctx, minx, midy);
+        }
+        else{
+            CGContextDrawPath(ctx, kCGPathStroke);
+            CGContextMoveToPoint(ctx, minx, midy);
+        }
+        
     }
-    
-    // Close the path
-    CGContextClosePath(ctx);
-    
-    // Fill and Stroke path
-    CGContextDrawPath(ctx, kCGPathFillStroke);
-    
 }
 
 #pragma mark - Setters
