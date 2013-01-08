@@ -1,6 +1,6 @@
 //
 //  TKRoundedView.h
-//  Perfect Gym
+//  TKRoundedView
 //
 //  Created by Tomasz Kuźma on 1/6/13.
 //  Copyright (c) 2013 Tomasz Kuźma. All rights reserved.
@@ -22,9 +22,8 @@ typedef NS_OPTIONS(NSUInteger, TKDrawnBorderSides) {
     TKDrawnBorderSidesBottom    = 1 <<  3,
 };
 
-static const TKRoundedCorner TKRoundedCornerAll = TKRoundedCornerTopRight | TKRoundedCornerBottomRight | TKRoundedCornerBottomLeft | TKRoundedCornerTopLeft;
-
-static const TKRoundedCorner TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDrawnBorderSidesLeft | TKDrawnBorderSidesTop | TKDrawnBorderSidesBottom;
+extern const TKRoundedCorner TKRoundedCornerAll;
+extern const TKDrawnBorderSides TKDrawnBorderSidesAll;
 
 @interface TKRoundedView : UIView
 
@@ -37,10 +36,10 @@ static const TKRoundedCorner TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | T
 /* Fill color of the figure - default white */
 @property (nonatomic, strong) UIColor *fillColor;
 
-/* Stroke color for the figure, default is grey */
+/* Stroke color for the figure, default is light gray */
 @property (nonatomic, strong) UIColor *borderColor;
 
-/* Border line width, default 5.0f */
+/* Border line width, default 1.0f */
 @property (nonatomic, assign) CGFloat borderWidth;
 
 /* Corners radius , default 15.0f */

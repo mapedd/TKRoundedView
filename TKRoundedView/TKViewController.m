@@ -26,9 +26,7 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
-    
 
-    
     self.aSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90 , self.view.frame.size.height - 34, 88, 44)];
     [self.view addSubview:_aSwitch];
     [_aSwitch addTarget:self action:@selector(switchSwitched:) forControlEvents:UIControlEventValueChanged];

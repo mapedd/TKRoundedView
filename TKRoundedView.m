@@ -1,12 +1,16 @@
 //
 //  TKRoundedView.m
-//  Perfect Gym
+//  TKRoundedView
 //
 //  Created by Tomasz Kuźma on 1/6/13.
 //  Copyright (c) 2013 Tomasz Kuźma. All rights reserved.
 //
 
 #import "TKRoundedView.h"
+
+const TKRoundedCorner TKRoundedCornerAll = TKRoundedCornerTopRight | TKRoundedCornerBottomRight | TKRoundedCornerBottomLeft | TKRoundedCornerTopLeft;
+
+const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDrawnBorderSidesLeft | TKDrawnBorderSidesTop | TKDrawnBorderSidesBottom;
 
 @implementation TKRoundedView
 
@@ -37,7 +41,7 @@
     self.contentMode = UIViewContentModeRedraw;
     
     _fillColor = [UIColor whiteColor];
-    _borderColor = [UIColor grayColor];
+    _borderColor = [UIColor lightGrayColor];
     _cornerRadius = 15.0f;
     _borderWidth = 1.0f;
     _roundedCorners = TKRoundedCornerAll;
