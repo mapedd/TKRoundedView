@@ -24,7 +24,7 @@ typedef NS_OPTIONS(NSUInteger, TKDrawnBorderSides) {
 
 static const TKRoundedCorner TKRoundedCornerAll = TKRoundedCornerTopRight | TKRoundedCornerBottomRight | TKRoundedCornerBottomLeft | TKRoundedCornerTopLeft;
 
-static const TKRoundedCorner TKDrawnBordersSidesAll = TKDrawnBorderSidesRight | TKDrawnBorderSidesLeft | TKDrawnBorderSidesTop | TKDrawnBorderSidesBottom;
+static const TKRoundedCorner TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDrawnBorderSidesLeft | TKDrawnBorderSidesTop | TKDrawnBorderSidesBottom;
 
 @interface TKRoundedView : UIView
 

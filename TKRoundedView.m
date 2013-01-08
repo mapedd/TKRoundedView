@@ -41,7 +41,7 @@
     _cornerRadius = 15.0f;
     _borderWidth = 1.0f;
     _roundedCorners = TKRoundedCornerAll;
-    _drawnBordersSides = TKDrawnBordersSidesAll;
+    _drawnBordersSides = TKDrawnBorderSidesAll;
     
 }
 
@@ -74,8 +74,8 @@
     // Add and stroke rect
     [self addPathToContext:ctx inRect:properRect respectDrawnBorder:YES];
     
-    // Close the path
-    CGContextClosePath(ctx);
+//    // Close the path
+//    CGContextClosePath(ctx);
     
     // Fill and Stroke path
     CGContextDrawPath(ctx, kCGPathStroke);
@@ -92,12 +92,13 @@
     CGFloat midy = CGRectGetMidY(rect);
     CGFloat maxy = CGRectGetMaxY(rect);
     
-    // Start at 1
+
     CGContextMoveToPoint(ctx, minx, midy);
     
+    /* Top Left Corner */
     if (_roundedCorners & TKRoundedCornerTopLeft) {
-        // Add an arc through 2 to 3
         CGContextAddArcToPoint(ctx, minx, miny, midx, miny, _cornerRadius);
+        CGContextAddLineToPoint(ctx, midx, miny);
     }
     else{
         
@@ -118,9 +119,10 @@
         }
     }
     
+    /* Top Right Corner */
     if (_roundedCorners & TKRoundedCornerTopRight) {
-        // Add an arc through 4 to 5
         CGContextAddArcToPoint(ctx, maxx, miny, maxx, midy, _cornerRadius);
+        CGContextAddLineToPoint(ctx, maxx, midy);
     }
     else{
         
@@ -141,9 +143,11 @@
         }
     }
     
+    /* Bottom Right Corner */
     if (_roundedCorners & TKRoundedCornerBottomRight) {
-        // Add an arc through 6 to 7
         CGContextAddArcToPoint(ctx, maxx, maxy, midx, maxy, _cornerRadius);
+        CGContextAddLineToPoint(ctx, midx, maxy);
+        
     }
     else{
         
@@ -164,9 +168,10 @@
         }
     }
     
+    /* Bottom Left Corner */
     if (_roundedCorners & TKRoundedCornerBottomLeft) {
-        // Add an arc through 8 to 9
         CGContextAddArcToPoint(ctx, minx, maxy, minx, midy, _cornerRadius);
+        CGContextAddLineToPoint(ctx, minx, midy);
     }
     else{
         
@@ -182,11 +187,12 @@
             CGContextAddLineToPoint(ctx, minx, midy);
         }
         else{
-            CGContextDrawPath(ctx, kCGPathStroke);
             CGContextMoveToPoint(ctx, minx, midy);
+            CGContextDrawPath(ctx, kCGPathStroke);
         }
         
     }
+    
 }
 
 #pragma mark - Setters
