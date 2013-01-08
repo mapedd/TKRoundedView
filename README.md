@@ -13,6 +13,7 @@ Simple rounded corners __without__ images
 		view.roundedCorners = TKRoundedCornerTopLeft
 		view.borderColor = [UIColor greenColor];
 		view.fillColor = [UIColor whiteColor];
+		view.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesTop;
 		view.borderWidth = 5.0f;
 		view.cornerRadius = 15.0f;
 
@@ -23,6 +24,7 @@ Simple rounded corners __without__ images
 - borderColor
 - fillColor
 - rounded corners
+- drawn borders
 
 
 ##Example project
