@@ -50,8 +50,16 @@
 - (void)drawRect:(CGRect)rect{
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     
+    CGFloat halfLineWidth = _borderWidth / 2.0f;
     
-    CGRect properRect = CGRectInset(rect, _borderWidth/2.0f, _borderWidth/2.0f);
+    CGFloat topInsets = _drawnBordersSides & TKDrawnBorderSidesTop ? halfLineWidth : 0.0f;
+    CGFloat leftInsets = _drawnBordersSides & TKDrawnBorderSidesLeft ? halfLineWidth : 0.0f;
+    CGFloat rightInsets = _drawnBordersSides & TKDrawnBorderSidesRight ? halfLineWidth : 0.0f;
+    CGFloat bottomInsets = _drawnBordersSides & TKDrawnBorderSidesBottom ? halfLineWidth : 0.0f;
+    
+    UIEdgeInsets insets = UIEdgeInsetsMake(topInsets, leftInsets, bottomInsets, rightInsets);
+    
+    CGRect properRect = UIEdgeInsetsInsetRect(rect, insets);
     
     /* Setup colors and line width */
     CGContextSetFillColorWithColor(ctx, _fillColor.CGColor);
