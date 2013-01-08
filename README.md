@@ -4,7 +4,8 @@
 
 Simple rounded corners __without__ images
 
-![Screenshot](https://dl.dropbox.com/u/450887/tkroundedview.png)
+![Screenshot](https://dl.dropbox.com/u/450887/tkroundedview1.png)
+![Screenshot](https://dl.dropbox.com/u/450887/tkroundedview2.png)
 
 ##Example usage
 
