@@ -197,6 +197,11 @@
 
 #pragma mark - Setters
 
+- (void)setDrawnBordersSides:(TKDrawnBorderSides)drawnBordersSides{
+    _drawnBordersSides = drawnBordersSides;
+    [self setNeedsDisplay];
+}
+
 - (void)setRoundedCorners:(TKRoundedCorner)roundedCorners{
     _roundedCorners = roundedCorners;
     [self setNeedsDisplay];
