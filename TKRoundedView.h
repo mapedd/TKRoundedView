@@ -22,6 +22,13 @@ typedef NS_OPTIONS(NSUInteger, TKDrawnBorderSides) {
     TKDrawnBorderSidesBottom    = 1 <<  3,
 };
 
+typedef NS_ENUM(NSInteger, TKGradientDirection) {
+    TKGradientDirectionHorizontal,
+    TKGradientDirectionVertical,
+    TKGradientDirectionUp,
+    TKGradientDirectionDown,
+};
+
 extern const TKRoundedCorner TKRoundedCornerAll;
 extern const TKDrawnBorderSides TKDrawnBorderSidesAll;
 
@@ -45,7 +52,10 @@ extern const TKDrawnBorderSides TKDrawnBorderSidesAll;
 /* Corners radius , default 15.0f */
 @property (nonatomic, assign) CGFloat cornerRadius;
 
-/* Array of NSDictionaries with NSNumber with color's locatioj and the UIColor object  */
+/* Direction of the gradient [options -, |,  /,  \] (if there will be a gradient drawn), default vertical  */
+@property (nonatomic, assign) TKGradientDirection gradientDirection;
+
+/* NSArray of NSDictionaries with NSNumber with color's locations and the UIColor object, default nil  */
 @property (nonatomic, strong) NSArray *gradientColorsAndLocations;
 
 @end

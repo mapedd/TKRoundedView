@@ -58,11 +58,11 @@
     
     }
     
-    NSArray *gradientColorsAndLocations = (@[
-                                           @{@"color": [UIColor blackColor],@"location": @(0.0f)},
-                                           @{@"color": [UIColor redColor],@"location": @(0.5f)},
-                                           @{@"color": [UIColor whiteColor],@"location": @(1.0f)}
-                                           ]);
+    NSString *colorKey = @"color";
+    NSString *locationKey = @"location";
+    
+    
+    TKGradientDirection gradientDirection = TKGradientDirectionDown;
     
     CGFloat offset = 10.0f;
     
@@ -88,6 +88,12 @@
             TKRoundedCornerTopLeft | TKRoundedCornerTopRight | TKRoundedCornerBottomLeft,
         };
         
+        NSArray *gradientColorsAndLocations = (@[
+                                               @{colorKey: [UIColor blackColor],locationKey: @(0.0f)},
+                                               @{colorKey: [UIColor lightGrayColor]  ,locationKey: @(0.5f)},
+                                               @{colorKey: [UIColor whiteColor],locationKey: @(1.0f)}
+                                               ]);
+        
         for (int i = 0; i < 13; i++) {
             
             TKRoundedView *view1 = [[TKRoundedView alloc] initWithFrame:CGRectInset(frame, 10, 10)];
@@ -96,6 +102,7 @@
             view1.fillColor = [UIColor colorWithWhite:0.6 alpha:0.1];
             view1.borderWidth = 5.0f;
             view1.gradientColorsAndLocations = gradientColorsAndLocations;
+            view1.gradientDirection = gradientDirection;
             view1.cornerRadius = side/4;
             [self.view addSubview:view1];
             
@@ -109,6 +116,11 @@
         }
     }
     else{
+        
+        NSArray *gradientColorsAndLocations = (@[
+                                               @{colorKey: [UIColor colorWithRed:0.0f green:137.0f/255.0f blue:248.0f/255.0f alpha:1.0f],locationKey: @(0.0f)},
+                                               @{colorKey: [UIColor colorWithRed:0.0f green:89.0f/255.0f blue:234.0f/255.0f alpha:1.0f],locationKey: @(1.0f)}
+                                               ]);
         
         
         for (int i = 0; i < 10; i++) {
@@ -157,8 +169,9 @@
                 view1.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesTop;
             }
             
-            view1.borderColor = [UIColor colorWithRed:0.123 green:0.435 blue:0.52 alpha:1.0];
-            view1.fillColor = [UIColor redColor];;
+            view1.borderColor = [UIColor colorWithRed:1.000 green:0.899 blue:0.520 alpha:1.000];
+            view1.fillColor = [UIColor redColor];
+            view1.gradientColorsAndLocations = gradientColorsAndLocations;
             view1.borderWidth = 5.0f;
             view1.cornerRadius = 30.0f;
             [self.view addSubview:view1];

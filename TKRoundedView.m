@@ -12,9 +12,34 @@ const TKRoundedCorner TKRoundedCornerAll = TKRoundedCornerTopRight | TKRoundedCo
 
 const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDrawnBorderSidesLeft | TKDrawnBorderSidesTop | TKDrawnBorderSidesBottom;
 
+@interface TKRoundedView (){
+    CGColorSpaceRef _colorSpace;
+    CGFloat* _locationsTable;
+    CFArrayRef _cfColors;
+    CGGradientRef _gradient;
+}
+@end
+
 @implementation TKRoundedView
 
 #pragma mark - Initialization
+
+- (void)dealloc{
+    if(_locationsTable != NULL)
+        free(_locationsTable);
+    
+    if (_cfColors != NULL) {
+        CFRelease(_cfColors);
+    }
+    
+    if (_colorSpace != NULL) {
+        CGColorSpaceRelease(_colorSpace);
+    }
+    
+    if (_gradient != NULL) {
+        CGGradientRelease(_gradient);
+    }
+}
 
 - (id)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
@@ -40,6 +65,7 @@ const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDra
     self.backgroundColor = [UIColor clearColor];
     self.contentMode = UIViewContentModeRedraw;
     
+    _gradientDirection = TKGradientDirectionVertical;
     _fillColor = [UIColor whiteColor];
     _borderColor = [UIColor lightGrayColor];
     _cornerRadius = 15.0f;
@@ -65,8 +91,7 @@ const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDra
     
     CGRect properRect = UIEdgeInsetsInsetRect(rect, insets);
     
-    /* Setup colors and line width */
-    CGContextSetFillColorWithColor(ctx, _fillColor.CGColor);
+    /* Setup line width */
     CGContextSetLineWidth(ctx, 0.0f);
     
     
@@ -84,6 +109,7 @@ const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDra
     }
     else{
         // Fill and Stroke path
+        CGContextSetFillColorWithColor(ctx, _fillColor.CGColor);
         CGContextDrawPath(ctx, kCGPathFill);
     }
     
@@ -93,9 +119,6 @@ const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDra
     
     // Add and stroke rect
     [self addPathToContext:ctx inRect:properRect respectDrawnBorder:YES];
-    
-//    // Close the path
-//    CGContextClosePath(ctx);
     
     // Fill and Stroke path
     CGContextDrawPath(ctx, kCGPathStroke);
@@ -217,54 +240,41 @@ const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDra
 
 - (void)drawGradientToContext:(CGContextRef)ctx inRect:(CGRect)rect{
     
-    NSMutableArray *colors = [NSMutableArray arrayWithCapacity:_gradientColorsAndLocations.count];
-    NSMutableArray *locations = [NSMutableArray arrayWithCapacity:_gradientColorsAndLocations.count];
-    
-    for (NSDictionary *dictionary in self.gradientColorsAndLocations) {
-        if ([dictionary isKindOfClass:[NSDictionary class]]) {
-            for (NSString *key in dictionary) {
-                id object = dictionary[key];
-                if ([object isKindOfClass:[NSNumber class]]) {
-                    [locations addObject:object];
-                }
-                else if ([object isKindOfClass:[UIColor class]]){
-                    [colors addObject:object];
-                }
-            }
-        }
+    if (_gradient == NULL) {
+        _gradient = CGGradientCreateWithColors(_colorSpace,_cfColors, _locationsTable);
     }
     
-    if (colors.count == locations.count) {
-        
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        NSInteger count = locations.count;
-        
-        CGFloat* locationsTable = malloc((size_t) sizeof(CGFloat) * count);
-        
-        CFMutableArrayRef cfColors = CFArrayCreateMutable(kCFAllocatorDefault, count, &kCFTypeArrayCallBacks);
-        
-        for(int i = 0; i < count; i++){
-            NSNumber *locationNumber = locations[i];
-            locationsTable[i] = [locationNumber floatValue];
-            CGColorRef color = [colors[i] CGColor];
-            CFArrayAppendValue(cfColors, color);
-        }
-        
-        CGGradientRef gradient = CGGradientCreateWithColors(colorSpace,cfColors, locationsTable);
-        
-        
-        CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
-        CGPoint endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
-        
-        CGContextSaveGState(ctx);
-        CGContextAddRect(ctx, rect);
-        CGContextClip(ctx);
-        CGContextDrawLinearGradient(ctx, gradient, startPoint, endPoint, 0);
-        CGContextRestoreGState(ctx);
-        
-        CGGradientRelease(gradient);
-        CGColorSpaceRelease(colorSpace);
+    CGPoint startPoint = CGPointZero;
+    CGPoint endPoint = CGPointZero;
+    
+    switch (_gradientDirection) {
+        case TKGradientDirectionVertical:
+            startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
+            endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
+            break;
+        case TKGradientDirectionHorizontal:
+            startPoint = CGPointMake(CGRectGetMinX(rect), CGRectGetMidY(rect));
+            endPoint = CGPointMake(CGRectGetMaxX(rect), CGRectGetMidY(rect));
+            break;
+        case TKGradientDirectionDown:
+            startPoint = CGPointMake(CGRectGetMinX(rect), CGRectGetMinY(rect));
+            endPoint = CGPointMake(CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+            break;
+        case TKGradientDirectionUp:
+            startPoint = CGPointMake(CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+            endPoint = CGPointMake(CGRectGetMinX(rect), CGRectGetMinY(rect));
+            break;
+            
+        default:
+            break;
     }
+    
+    CGContextSaveGState(ctx);
+    CGContextAddRect(ctx, rect);
+    CGContextClip(ctx);
+    CGContextDrawLinearGradient(ctx, _gradient, startPoint, endPoint, 0);
+    CGContextRestoreGState(ctx);
+    
 }
 
 #pragma mark - Setters
@@ -293,6 +303,21 @@ const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDra
     }
 }
 
+- (void)setGradientColorsAndLocations:(NSArray *)gradientColorsAndLocations{
+    if (_gradientColorsAndLocations != gradientColorsAndLocations) {
+        _gradientColorsAndLocations = gradientColorsAndLocations;
+        [self prepareGradient];
+        [self setNeedsDisplay];
+    }
+}
+
+- (void)setGradientDirection:(TKGradientDirection)gradientDirection{
+    if (_gradientDirection != gradientDirection) {
+        _gradientDirection = gradientDirection;
+        [self setNeedsDisplay];
+    }
+}
+
 - (void)setBorderWidth:(CGFloat)borderWidth{
     _borderWidth = borderWidth;
     [self setNeedsDisplay];
@@ -301,6 +326,64 @@ const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDra
 - (void)setCornerRadius:(CGFloat)cornerRadius{
     _cornerRadius = cornerRadius;
     [self setNeedsDisplay];
+}
+
+#pragma mark - Private
+
+- (void)prepareGradient{
+    NSMutableArray *colors = [NSMutableArray arrayWithCapacity:_gradientColorsAndLocations.count];
+    NSMutableArray *locations = [NSMutableArray arrayWithCapacity:_gradientColorsAndLocations.count];
+    
+    for (NSDictionary *dictionary in self.gradientColorsAndLocations) {
+        if ([dictionary isKindOfClass:[NSDictionary class]]) {
+            for (NSString *key in dictionary) {
+                id object = dictionary[key];
+                if ([object isKindOfClass:[NSNumber class]]) {
+                    [locations addObject:object];
+                }
+                else if ([object isKindOfClass:[UIColor class]]){
+                    [colors addObject:object];
+                }
+            }
+        }
+    }
+    
+    if (colors.count == locations.count) {
+        
+        if (_colorSpace == NULL) {
+            _colorSpace = CGColorSpaceCreateDeviceRGB();
+        }
+        
+        NSInteger count = locations.count;
+        
+        
+        if (_locationsTable != NULL) {
+            free(_locationsTable);
+        }
+        
+        _locationsTable = malloc((size_t) sizeof(CGFloat) * count);
+        
+        CFMutableArrayRef cfColorsMutable = CFArrayCreateMutable(kCFAllocatorDefault, count, &kCFTypeArrayCallBacks);
+        
+        for(int i = 0; i < count; i++){
+            NSNumber *locationNumber = locations[i];
+            _locationsTable[i] = [locationNumber floatValue];
+            CGColorRef color = [colors[i] CGColor];
+            CFArrayAppendValue(cfColorsMutable, color);
+        }
+        
+        if (_cfColors != NULL) {
+            CFRelease(_cfColors);
+        }
+        _cfColors = CFArrayCreateCopy(kCFAllocatorDefault, cfColorsMutable);
+        
+        CFRelease(cfColorsMutable);
+        
+        if (_gradient != NULL) {
+            CGGradientRelease(_gradient);
+            _gradient = NULL;
+        }
+    }
 }
 
 @end
