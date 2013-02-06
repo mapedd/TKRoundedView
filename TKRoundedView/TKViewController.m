@@ -58,6 +58,12 @@
     
     }
     
+    NSArray *gradientColorsAndLocations = (@[
+                                           @{@"color": [UIColor blackColor],@"location": @(0.0f)},
+                                           @{@"color": [UIColor redColor],@"location": @(0.5f)},
+                                           @{@"color": [UIColor whiteColor],@"location": @(1.0f)}
+                                           ]);
+    
     CGFloat offset = 10.0f;
     
     CGFloat side = (self.view.frame.size.width - 4 * offset)/ 3.0f ;
@@ -89,6 +95,7 @@
             view1.borderColor = [UIColor colorWithRed:0.123 green:0.435 blue:0.52 alpha:1.0];
             view1.fillColor = [UIColor colorWithWhite:0.6 alpha:0.1];
             view1.borderWidth = 5.0f;
+            view1.gradientColorsAndLocations = gradientColorsAndLocations;
             view1.cornerRadius = side/4;
             [self.view addSubview:view1];
             

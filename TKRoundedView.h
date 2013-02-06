@@ -45,4 +45,7 @@ extern const TKDrawnBorderSides TKDrawnBorderSidesAll;
 /* Corners radius , default 15.0f */
 @property (nonatomic, assign) CGFloat cornerRadius;
 
+/* Array of NSDictionaries with NSNumber with color's locatioj and the UIColor object  */
+@property (nonatomic, strong) NSArray *gradientColorsAndLocations;
+
 @end

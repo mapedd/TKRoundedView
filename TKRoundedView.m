@@ -76,8 +76,16 @@ const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDra
     // Close the path
     CGContextClosePath(ctx);
     
-    // Fill and Stroke path
-    CGContextDrawPath(ctx, kCGPathFill);
+    if (_gradientColorsAndLocations.count) {
+        CGContextSaveGState(ctx);
+        CGContextClip(ctx);
+        [self drawGradientToContext:ctx inRect:rect];
+        CGContextRestoreGState(ctx);
+    }
+    else{
+        // Fill and Stroke path
+        CGContextDrawPath(ctx, kCGPathFill);
+    }
     
     /* Setup colors and line width */
     CGContextSetStrokeColorWithColor(ctx, _borderColor.CGColor);
@@ -205,6 +213,58 @@ const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDra
         
     }
     
+}
+
+- (void)drawGradientToContext:(CGContextRef)ctx inRect:(CGRect)rect{
+    
+    NSMutableArray *colors = [NSMutableArray arrayWithCapacity:_gradientColorsAndLocations.count];
+    NSMutableArray *locations = [NSMutableArray arrayWithCapacity:_gradientColorsAndLocations.count];
+    
+    for (NSDictionary *dictionary in self.gradientColorsAndLocations) {
+        if ([dictionary isKindOfClass:[NSDictionary class]]) {
+            for (NSString *key in dictionary) {
+                id object = dictionary[key];
+                if ([object isKindOfClass:[NSNumber class]]) {
+                    [locations addObject:object];
+                }
+                else if ([object isKindOfClass:[UIColor class]]){
+                    [colors addObject:object];
+                }
+            }
+        }
+    }
+    
+    if (colors.count == locations.count) {
+        
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        NSInteger count = locations.count;
+        
+        CGFloat* locationsTable = malloc((size_t) sizeof(CGFloat) * count);
+        
+        CFMutableArrayRef cfColors = CFArrayCreateMutable(kCFAllocatorDefault, count, &kCFTypeArrayCallBacks);
+        
+        for(int i = 0; i < count; i++){
+            NSNumber *locationNumber = locations[i];
+            locationsTable[i] = [locationNumber floatValue];
+            CGColorRef color = [colors[i] CGColor];
+            CFArrayAppendValue(cfColors, color);
+        }
+        
+        CGGradientRef gradient = CGGradientCreateWithColors(colorSpace,cfColors, locationsTable);
+        
+        
+        CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
+        CGPoint endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
+        
+        CGContextSaveGState(ctx);
+        CGContextAddRect(ctx, rect);
+        CGContextClip(ctx);
+        CGContextDrawLinearGradient(ctx, gradient, startPoint, endPoint, 0);
+        CGContextRestoreGState(ctx);
+        
+        CGGradientRelease(gradient);
+        CGColorSpaceRelease(colorSpace);
+    }
 }
 
 #pragma mark - Setters
