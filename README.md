@@ -9,10 +9,18 @@ Simple rounded corners __without__ images
 
 ##Example usage
 
+		NSArray *gradientColorsAndLocations = (@[
+                                               @{colorKey: [UIColor blackColor],locationKey: @(0.0f)},
+                                               @{colorKey: [UIColor lightGrayColor]  ,locationKey: @(0.5f)},
+                                               @{colorKey: [UIColor whiteColor],locationKey: @(1.0f)}
+                                               ]);
+		
 		TKRoundedView *view = [[TKRoundedView alloc] initWithFrame:frame];
 		view.roundedCorners = TKRoundedCornerTopLeft
 		view.borderColor = [UIColor greenColor];
 		view.fillColor = [UIColor whiteColor];
+		view.gradientColorsAndLocations = gradientColorsAndLocations;
+		view.gradientDirection = TKGradientDirectionDown;
 		view.drawnBordersSides = TKDrawnBorderSidesLeft | TKDrawnBorderSidesTop;
 		view.borderWidth = 5.0f;
 		view.cornerRadius = 15.0f;
@@ -25,6 +33,8 @@ Simple rounded corners __without__ images
 - fillColor
 - rounded corners
 - drawn borders
+- gradient with any number of colors
+- gradient location
 
 
 ##Example project
