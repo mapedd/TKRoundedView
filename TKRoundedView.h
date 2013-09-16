@@ -32,6 +32,14 @@ typedef NS_ENUM(NSInteger, TKGradientDirection) {
 extern const TKRoundedCorner TKRoundedCornerAll;
 extern const TKDrawnBorderSides TKDrawnBorderSidesAll;
 
+UIImage * TKRoundedCornerImage(CGSize size,
+                               TKRoundedCorner corners,
+                               TKDrawnBorderSides drawnBorders,
+                               UIColor *fillColor,
+                               UIColor *borderColor,
+                               CGFloat borderWidth,
+                               CGFloat cornerRadius);
+
 @interface TKRoundedView : UIView
 
 /* Which borders should be drawn - default TKDrawnBordersSidesAll - only not rounded borders can *NOT* be drawn atm  */

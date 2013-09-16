@@ -7,16 +7,46 @@
 //
 
 #import "TKRoundedView.h"
+#import <QuartzCore/QuartzCore.h>
 
 const TKRoundedCorner TKRoundedCornerAll = TKRoundedCornerTopRight | TKRoundedCornerBottomRight | TKRoundedCornerBottomLeft | TKRoundedCornerTopLeft;
 
 const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDrawnBorderSidesLeft | TKDrawnBorderSidesTop | TKDrawnBorderSidesBottom;
+
+UIImage * TKRoundedCornerImage(CGSize size,
+                               TKRoundedCorner corners,
+                               TKDrawnBorderSides drawnBorders,
+                               UIColor *fillColor,
+                               UIColor *borderColor,
+                               CGFloat borderWidth,
+                               CGFloat cornerRadius){
+    
+    TKRoundedView *view = [[TKRoundedView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, size.width, size.height)];
+    view.roundedCorners = corners;
+    view.drawnBordersSides = drawnBorders;
+    view.fillColor = fillColor;
+    view.borderColor = borderColor;
+    view.borderWidth = borderWidth;
+    view.cornerRadius = cornerRadius;
+    
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    
+    UIImage * img = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    view = nil;
+    
+    return img;
+    
+}
 
 @interface TKRoundedView (){
     CGColorSpaceRef _colorSpace;
     CGFloat* _locationsTable;
     CFArrayRef _cfColors;
     CGGradientRef _gradient;
+    NSArray *_observableKeys;
 }
 @end
 
@@ -25,6 +55,11 @@ const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDra
 #pragma mark - Initialization
 
 - (void)dealloc{
+    
+    [self.observableKeys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [self removeObserver:self forKeyPath:obj];
+    }];
+    
     if(_locationsTable != NULL)
         free(_locationsTable);
     
@@ -73,6 +108,9 @@ const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDra
     _roundedCorners = TKRoundedCornerAll;
     _drawnBordersSides = TKDrawnBorderSidesAll;
     
+    [self.observableKeys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [self addObserver:self forKeyPath:obj options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:nil];
+    }];
 }
 
 #pragma mark - Drawing
@@ -277,55 +315,95 @@ const TKDrawnBorderSides TKDrawnBorderSidesAll = TKDrawnBorderSidesRight | TKDra
     
 }
 
-#pragma mark - Setters
+//#pragma mark - Setters
+//
+//- (void)setDrawnBordersSides:(TKDrawnBorderSides)drawnBordersSides{
+//    _drawnBordersSides = drawnBordersSides;
+//    [self setNeedsDisplay];
+//}
+//
+//- (void)setRoundedCorners:(TKRoundedCorner)roundedCorners{
+//    _roundedCorners = roundedCorners;
+//    [self setNeedsDisplay];
+//}
+//
+//- (void)setBorderColor:(UIColor *)borderColor{
+//    if (_borderColor != borderColor) {
+//        _borderColor = borderColor;
+//        [self setNeedsDisplay];
+//    }
+//}
+//
+//- (void)setFillColor:(UIColor *)fillColor{
+//    if (_fillColor != fillColor) {
+//        _fillColor = fillColor;
+//        [self setNeedsDisplay];
+//    }
+//}
+//
+//- (void)setGradientColorsAndLocations:(NSArray *)gradientColorsAndLocations{
+//    if (_gradientColorsAndLocations != gradientColorsAndLocations) {
+//        _gradientColorsAndLocations = gradientColorsAndLocations;
+//        [self prepareGradient];
+//        [self setNeedsDisplay];
+//    }
+//}
+//
+//- (void)setGradientDirection:(TKGradientDirection)gradientDirection{
+//    if (_gradientDirection != gradientDirection) {
+//        _gradientDirection = gradientDirection;
+//        [self setNeedsDisplay];
+//    }
+//}
+//
+//- (void)setBorderWidth:(CGFloat)borderWidth{
+//    _borderWidth = borderWidth;
+//    [self setNeedsDisplay];
+//}
+//
+//- (void)setCornerRadius:(CGFloat)cornerRadius{
+//    _cornerRadius = cornerRadius;
+//    [self setNeedsDisplay];
+//}
 
-- (void)setDrawnBordersSides:(TKDrawnBorderSides)drawnBordersSides{
-    _drawnBordersSides = drawnBordersSides;
-    [self setNeedsDisplay];
+
+#pragma mark - Key-Value Observing
+
++ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key{
+    return YES;
 }
 
-- (void)setRoundedCorners:(TKRoundedCorner)roundedCorners{
-    _roundedCorners = roundedCorners;
-    [self setNeedsDisplay];
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
+
+    [self.observableKeys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if ([keyPath isEqualToString:obj]) {[self setNeedsDisplay]; return;};
+    }];
+    
+
 }
 
-- (void)setBorderColor:(UIColor *)borderColor{
-    if (_borderColor != borderColor) {
-        _borderColor = borderColor;
+- (void)didChange:(NSKeyValueChange)changeKind valuesAtIndexes:(NSIndexSet *)indexes forKey:(NSString *)key{
+
+    if ([key isEqualToString:@"gradientColorsAndLocations"]) {
         [self setNeedsDisplay];
     }
 }
 
-- (void)setFillColor:(UIColor *)fillColor{
-    if (_fillColor != fillColor) {
-        _fillColor = fillColor;
-        [self setNeedsDisplay];
+- (NSArray *)observableKeys{
+    if (!_observableKeys) {
+        _observableKeys = (@[
+                           @"drawnBordersSides",
+                           @"roundedCorners",
+                           @"fillColor",
+                           @"borderColor",
+                           @"borderWidth",
+                           @"cornerRadius",
+                           @"gradientDirection",
+                           @"gradientColorsAndLocations"
+                           ]);
     }
-}
-
-- (void)setGradientColorsAndLocations:(NSArray *)gradientColorsAndLocations{
-    if (_gradientColorsAndLocations != gradientColorsAndLocations) {
-        _gradientColorsAndLocations = gradientColorsAndLocations;
-        [self prepareGradient];
-        [self setNeedsDisplay];
-    }
-}
-
-- (void)setGradientDirection:(TKGradientDirection)gradientDirection{
-    if (_gradientDirection != gradientDirection) {
-        _gradientDirection = gradientDirection;
-        [self setNeedsDisplay];
-    }
-}
-
-- (void)setBorderWidth:(CGFloat)borderWidth{
-    _borderWidth = borderWidth;
-    [self setNeedsDisplay];
-}
-
-- (void)setCornerRadius:(CGFloat)cornerRadius{
-    _cornerRadius = cornerRadius;
-    [self setNeedsDisplay];
+    return _observableKeys;
 }
 
 #pragma mark - Private
