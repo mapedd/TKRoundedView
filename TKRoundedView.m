@@ -374,13 +374,22 @@ UIImage * TKRoundedCornerImage(CGSize size,
 }
 
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
-
-    [self.observableKeys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if ([keyPath isEqualToString:obj]) {[self setNeedsDisplay]; return;};
-    }];
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    if ([keyPath isEqualToString:@"gradientColorsAndLocations"])
+    {
+        [self prepareGradient];
+        [self setNeedsDisplay];
+        return ;
+    }
     
-
+    [self.observableKeys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
+     {
+         if ([keyPath isEqualToString:obj]) {[self setNeedsDisplay]; return;};
+     }];
 }
 
 - (void)didChange:(NSKeyValueChange)changeKind valuesAtIndexes:(NSIndexSet *)indexes forKey:(NSString *)key{
