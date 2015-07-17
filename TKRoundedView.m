@@ -120,10 +120,10 @@ UIImage * TKRoundedCornerImage(CGSize size,
     
     CGFloat halfLineWidth = _borderWidth / 2.0f;
     
-    CGFloat topInsets = _drawnBordersSides & TKDrawnBorderSidesTop ? halfLineWidth : 0.0f;
-    CGFloat leftInsets = _drawnBordersSides & TKDrawnBorderSidesLeft ? halfLineWidth : 0.0f;
-    CGFloat rightInsets = _drawnBordersSides & TKDrawnBorderSidesRight ? halfLineWidth : 0.0f;
-    CGFloat bottomInsets = _drawnBordersSides & TKDrawnBorderSidesBottom ? halfLineWidth : 0.0f;
+    CGFloat topInsets = _drawnBordersSides & TKDrawnBorderSidesTop ? halfLineWidth : -halfLineWidth;
+    CGFloat leftInsets = _drawnBordersSides & TKDrawnBorderSidesLeft ? halfLineWidth : -halfLineWidth;
+    CGFloat rightInsets = _drawnBordersSides & TKDrawnBorderSidesRight ? halfLineWidth : -halfLineWidth;
+    CGFloat bottomInsets = _drawnBordersSides & TKDrawnBorderSidesBottom ? halfLineWidth : -halfLineWidth;
     
     UIEdgeInsets insets = UIEdgeInsetsMake(topInsets, leftInsets, bottomInsets, rightInsets);
     
@@ -131,7 +131,6 @@ UIImage * TKRoundedCornerImage(CGSize size,
     
     /* Setup line width */
     CGContextSetLineWidth(ctx, 0.0f);
-    
     
     // Add and fill rect
     [self addPathToContext:ctx inRect:properRect respectDrawnBorder:NO];
@@ -173,11 +172,11 @@ UIImage * TKRoundedCornerImage(CGSize size,
     CGFloat midy = CGRectGetMidY(rect);
     CGFloat maxy = CGRectGetMaxY(rect);
     
-
+    
     CGContextMoveToPoint(ctx, minx, midy);
     
     /* Top Left Corner */
-    if (_roundedCorners & TKRoundedCornerTopLeft) {
+    if (_roundedCorners & TKRoundedCornerTopLeft && _drawnBordersSides & (TKDrawnBorderSidesTop | TKDrawnBorderSidesLeft)) {
         CGContextAddArcToPoint(ctx, minx, miny, midx, miny, _cornerRadius);
         CGContextAddLineToPoint(ctx, midx, miny);
     }
@@ -201,7 +200,7 @@ UIImage * TKRoundedCornerImage(CGSize size,
     }
     
     /* Top Right Corner */
-    if (_roundedCorners & TKRoundedCornerTopRight) {
+    if (_roundedCorners & TKRoundedCornerTopRight && _drawnBordersSides & (TKDrawnBorderSidesTop | TKDrawnBorderSidesRight)) {
         CGContextAddArcToPoint(ctx, maxx, miny, maxx, midy, _cornerRadius);
         CGContextAddLineToPoint(ctx, maxx, midy);
     }
@@ -225,7 +224,7 @@ UIImage * TKRoundedCornerImage(CGSize size,
     }
     
     /* Bottom Right Corner */
-    if (_roundedCorners & TKRoundedCornerBottomRight) {
+    if (_roundedCorners & TKRoundedCornerBottomRight && _drawnBordersSides & (TKDrawnBorderSidesBottom | TKDrawnBorderSidesRight)) {
         CGContextAddArcToPoint(ctx, maxx, maxy, midx, maxy, _cornerRadius);
         CGContextAddLineToPoint(ctx, midx, maxy);
         
@@ -250,7 +249,7 @@ UIImage * TKRoundedCornerImage(CGSize size,
     }
     
     /* Bottom Left Corner */
-    if (_roundedCorners & TKRoundedCornerBottomLeft) {
+    if (_roundedCorners & TKRoundedCornerBottomLeft && _drawnBordersSides & (TKDrawnBorderSidesBottom | TKDrawnBorderSidesLeft)) {
         CGContextAddArcToPoint(ctx, minx, maxy, minx, midy, _cornerRadius);
         CGContextAddLineToPoint(ctx, minx, midy);
     }
@@ -395,7 +394,7 @@ UIImage * TKRoundedCornerImage(CGSize size,
 
 
 - (void)didChange:(NSKeyValueChange)changeKind valuesAtIndexes:(NSIndexSet *)indexes forKey:(NSString *)key{
-
+    
     if ([key isEqualToString:@"gradientColorsAndLocations"])
     {
         [self prepareGradient];
@@ -406,15 +405,15 @@ UIImage * TKRoundedCornerImage(CGSize size,
 - (NSArray *)observableKeys{
     if (!_observableKeys) {
         _observableKeys = (@[
-                           @"drawnBordersSides",
-                           @"roundedCorners",
-                           @"fillColor",
-                           @"borderColor",
-                           @"borderWidth",
-                           @"cornerRadius",
-                           @"gradientDirection",
-                           @"gradientColorsAndLocations"
-                           ]);
+                             @"drawnBordersSides",
+                             @"roundedCorners",
+                             @"fillColor",
+                             @"borderColor",
+                             @"borderWidth",
+                             @"cornerRadius",
+                             @"gradientDirection",
+                             @"gradientColorsAndLocations"
+                             ]);
     }
     return _observableKeys;
 }
